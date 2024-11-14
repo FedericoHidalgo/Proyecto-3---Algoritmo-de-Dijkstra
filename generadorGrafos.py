@@ -1,5 +1,6 @@
 from generadorNodos import Nodo
 from generadorAristas import Arista
+import random
 
 class Grafo:
     """
@@ -11,6 +12,7 @@ class Grafo:
         """
         self.nodos = {}         #Conjunto, para evitar duplicados
         self.aristas = {}
+        self.costos = {}
         self.dirigido = dirigido    #Grafo no dirigido como valor de inicio
         self.attr = {
             """
@@ -41,6 +43,7 @@ class Grafo:
             V1 = self.agregarNodo(n2)   #Agrega nodo adyacente 
             arista = str(Arista(V0, V1, id))        
             self.aristas[arista] = arista   #Agrega arista
+            self.costos[arista] = random.random() #Agrega el costo de recorrer una arista
         return arista
        
     def __str__(self):
