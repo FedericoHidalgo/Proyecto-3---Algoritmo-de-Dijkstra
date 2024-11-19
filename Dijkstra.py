@@ -13,6 +13,8 @@ def nodosDeArista(self, nodo):
     aristaGrafo = self.aristas.values()
     #Generar una lista de nodos conectados por la arista
     n1 = []
+    #Generar una lista de los pesos de recorrer cada camino
+    camino = []
     #Convertimos al nodo de busqueda en cadena
     nodo = str(nodo)
     #Obtenemos el segundo nodo unido a la arista
@@ -20,23 +22,15 @@ def nodosDeArista(self, nodo):
         #Obtenemos los nodos (u, v)        
         n2 = i.split(' -> ', 1)
         if str(n2[0]) == nodo:       #Obtenemos el segundo nodo
-            n1.append(n2[1])
-        elif str(n2[1]) == nodo:     #Obtenemos el segundo nodo
+            n1.append(int(n2[1]))
+            #Agregamos nuestra lista de caminos
+            camino.append(int(self.costos.get(i)))
+        elif str(int(n2[1])) == nodo:     #Obtenemos el segundo nodo
             n1.append(n2[0])
-    #Retornamos la lista de nodos adyacentes
-    return n1
-
-def getCostoArista(self, n1, n2=False):
-    """
-    Método que obtiene los costos de recorrer las aristas que
-    se encuentran unidas al nodo
-    """
-    #Obtenemos las aristas generadas en el modelo
-    aristaGrafo = self.aristas.values()
-    for i in aristaGrafo:        
-        pass
-
-    
+            #Agregamos nuestra lista de caminos
+            camino.append(int(self.costos.get(i)))
+    #Retornamos la lista de nodos adyacentes y distancia de cada camino
+    return n1, camino
 
 def Dijkstra(modelo, s):
     """
@@ -47,20 +41,25 @@ def Dijkstra(modelo, s):
     colaPrioridad = PriorityQueue()
     #Conjunto de nodos explorados
     S = []
+    #Diccionario auxiliar para almacenar los valores de la cola
+    c = {}
     #Nodo fuente
     nodoFuente = modelo.nodos.get(s)
     #Si el nodo fuente no existe, termina el proceso
     if nodoFuente == None:
         print("El nodo Fuente no pertenece al modelo")
         return False
+    nodoFuente = int(nodoFuente)
     contadorNodos = 0
     #Agregamos a la cola de prioridades los nodos con prioridad de infinito
     while modelo.nodos.get(contadorNodos) != None:
-        if contadorNodos != int(nodoFuente):
+        if contadorNodos != nodoFuente:
             colaPrioridad.put((float('inf'), contadorNodos))
+            c[contadorNodos] = float('inf')
         else:
             #Asignar en cola de Prioridades el nodo fuente con valor 0
-            colaPrioridad.put((0, int(nodoFuente)))        
+            colaPrioridad.put((0, nodoFuente))  
+            c[nodoFuente] = 0   
         contadorNodos += 1
     #Mientras la cola de Prioridades no este vacia
     while not colaPrioridad.empty():
@@ -70,17 +69,22 @@ def Dijkstra(modelo, s):
         #Agregamos el nodo a la lista S
         S.append(nodo)
         #Para cada arista saliente de nodo
-        for i in nodosDeArista(modelo, nodo):
-            print("Nodos ady: ", i)
+        n1, camino = nodosDeArista(modelo, nodo)
+        for i in range(len(n1)):            
             #Si i no se encuentra en la lista S
+            if int(n1[i]) not in S:
+                print(f"{n1[i]} no se encuentra en {S}")
+                #Si d(v) > d(u) + l
+                print(f"d(v): {c.get(int(n1[i]))}")
+                print(f"d(u) + le: {int(prioridad) + camino[i]}")
+                if c.get(int(n1[i])) > (int(prioridad) + camino[i]):
+                    colaPrioridad.put((int(prioridad) + camino[i], int(n1[i])))
             """
             if int(i) not in S:                
                 print(f"{i} no se encuentra en {S}")
-                """
-            print(f"Costo de recorrer {i} {modelo.costos.get(i)}")
-                
-
-
+            print("Nodos ady: ", n1[i])
+            print(f"Costo calculado de recorrer: {camino[i]}") 
+            """         
 
     print("Cola Vacia?", colaPrioridad.empty())
     print("Lista de nodos recorridos", S)
@@ -89,9 +93,8 @@ def Dijkstra(modelo, s):
 
 modelo = modeloMalla(4, 4)
 print(modelo)
-#x = Dijkstra(modelo, 4)
-#print(x)
-getCostoArista(modelo)
+x = Dijkstra(modelo, 4)
+print(x)
 
 """
 #Ejemplo colas de prioridad
