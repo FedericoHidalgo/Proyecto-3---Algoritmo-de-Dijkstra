@@ -24,11 +24,11 @@ def nodosDeArista(self, nodo):
         if str(n2[0]) == nodo:       #Obtenemos el segundo nodo
             n1.append(int(n2[1]))
             #Agregamos nuestra lista de caminos
-            camino.append(int(self.costos.get(i)))
+            camino.append(self.costos.get(i))
         elif str(int(n2[1])) == nodo:     #Obtenemos el segundo nodo
             n1.append(n2[0])
             #Agregamos nuestra lista de caminos
-            camino.append(int(self.costos.get(i)))
+            camino.append(self.costos.get(i))
     #Retornamos la lista de nodos adyacentes y distancia de cada camino
     return n1, camino
 
@@ -54,56 +54,42 @@ def Dijkstra(modelo, s):
     #Agregamos a la cola de prioridades los nodos con prioridad de infinito
     while modelo.nodos.get(contadorNodos) != None:
         if contadorNodos != nodoFuente:
-            colaPrioridad.put((float('inf'), contadorNodos))
             c[contadorNodos] = float('inf')
         else:
             #Asignar en cola de Prioridades el nodo fuente con valor 0
-            colaPrioridad.put((0, nodoFuente))  
+            colaPrioridad.put((0, nodoFuente))
             c[nodoFuente] = 0   
         contadorNodos += 1
     #Mientras la cola de Prioridades no este vacia
     while not colaPrioridad.empty():
-        #Obtenemos el primer elemento de la cola
+        #Obtenemos el primer elemento de la cola    
         prioridad, nodo = colaPrioridad.get()
+        nodo = int(nodo)
         print(f"Prioridad: {prioridad}, Nodo: {nodo}")
         #Agregamos el nodo a la lista S
         S.append(nodo)
         #Para cada arista saliente de nodo
         n1, camino = nodosDeArista(modelo, nodo)
-        for i in range(len(n1)):            
+        print(f"Nodos vecinos: {n1}, Caminos: {camino}")        
+        for i in range(len(n1)): 
+            v = int(n1[i])  #Nodo v 
+            le = camino[i]  #Costo de recorrer desde nodo a v        
             #Si i no se encuentra en la lista S
-            if int(n1[i]) not in S:
-                print(f"{n1[i]} no se encuentra en {S}")
+            if v not in S:
+                print(f"{v} no se encuentra en {S}")
                 #Si d(v) > d(u) + l
-                print(f"d(v): {c.get(int(n1[i]))}")
-                print(f"d(u) + le: {int(prioridad) + camino[i]}")
-                if c.get(int(n1[i])) > (int(prioridad) + camino[i]):
-                    colaPrioridad.put((int(prioridad) + camino[i], int(n1[i])))
-            """
-            if int(i) not in S:                
-                print(f"{i} no se encuentra en {S}")
-            print("Nodos ady: ", n1[i])
-            print(f"Costo calculado de recorrer: {camino[i]}") 
-            """         
+                if c.get(v) > (c.get(nodo) + le):
+                    #d(v) = d(u) + l
+                    c[v] = c.get(nodo) + le
+                    #Actualizar en cola de prioridad d(v)
+                    colaPrioridad.put((c.get(v), v))                    
+                    print(f"Nueva prioridad {c.get(v)} en nodo {v}")
 
     print("Cola Vacia?", colaPrioridad.empty())
     print("Lista de nodos recorridos", S)
-
     return True
 
 modelo = modeloMalla(4, 4)
 print(modelo)
 x = Dijkstra(modelo, 4)
 print(x)
-
-"""
-#Ejemplo colas de prioridad
-colaPrioridad = PriorityQueue()
-colaPrioridad.put((3, "Sin importancia"))
-colaPrioridad.put((1, "Urgente"))
-colaPrioridad.put((2, "Importante"))
-
-while not colaPrioridad.empty():
-    prioridad, tarea = colaPrioridad.get()
-    print(f"Prioridad: {prioridad}, Tarea: {tarea}")
-"""
