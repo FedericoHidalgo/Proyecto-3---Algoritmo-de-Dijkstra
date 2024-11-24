@@ -14,11 +14,7 @@ class Grafo:
         self.aristas = {}
         self.costos = {}
         self.dirigido = dirigido    #Grafo no dirigido como valor de inicio
-        self.attr = {
-            """
-            Diccionario en construcción
-            """
-        }
+        self.attr = {}
 
     def agregarNodo(self, id):
         """
@@ -28,10 +24,10 @@ class Grafo:
         #Si no existe se crea uno nuevo        
         if nodo == None:
             nodo = Nodo(id)
-            self.nodos[id] = str(nodo)  #Agrega un nodo   
+            self.nodos[id] = str(nodo)  #Agrega un nodo  
         return nodo
-
-    def agregarArista(self, n1, n2, id):
+    
+    def agregarArista(self, n1, n2, id, le = None):
         """
         Agrega una arista al grafo
         """
@@ -43,7 +39,11 @@ class Grafo:
             V1 = self.agregarNodo(n2)   #Agrega nodo adyacente 
             arista = str(Arista(V0, V1, id))        
             self.aristas[arista] = arista   #Agrega arista
-            self.costos[arista] = random.random() #Agrega el costo de recorrer una arista
+            #Agrega el costo de recorrer una arista
+            if le == None:
+                self.costos[arista] = random.random() #Si no hay un valor definido de arista
+            else:
+                self.costos[arista] = le    #Si ya existe un valor definido para esa arista
         return arista
        
     def __str__(self):
@@ -69,10 +69,11 @@ class Grafo:
         cadena += 'digraph ' + id + '{\n'
         #Imprimir los nodos
         for nodo in self.nodos:
-            cadena += str(nodo) + ';\n'
+            print(f"Nodo: {nodo}, Valor de label: {str(self.attr.get(nodo))}")
+            cadena += str(nodo) + '[label="' + str(self.attr.get(nodo)) + '"];\n'
         #Imprimir las aristas
         for arista in self.aristas:
-            cadena += str(arista) + ';\n'
+            cadena += str(arista) + '[label="' + str(self.costos.get(arista)) + '"];\n'
         #Final del formato
         cadena += '}\n'
         return cadena
@@ -104,3 +105,12 @@ class Grafo:
         print(self.nodos.items())
         print("Aristas: ")
         print(self.aristas.items())
+
+    def setAtributo(self, id, distNB='inf'):
+        """
+        Asigna al nodo el costo de llegar desde el nodo base
+        """
+        self.attr[id] = str(distNB)     #Distancia del Nodo Base al nodo actual
+        return True
+
+

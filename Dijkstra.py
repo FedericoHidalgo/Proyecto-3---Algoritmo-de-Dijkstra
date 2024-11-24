@@ -32,11 +32,12 @@ def nodosDeArista(self, nodo):
     #Retornamos la lista de nodos adyacentes y distancia de cada camino
     return n1, camino
 
-def Dijkstra(modelo, s):
+def Dijkstra(modelo, s, dirigido = False):
     """
     Algoritmo de Dijkstra. Dado un nodo fuente (s), 
     calcula el árbol de caminos más cortos.
     """ 
+    G = Grafo(dirigido)
     #Cola de prioridades
     colaPrioridad = PriorityQueue()
     #Conjunto de nodos explorados
@@ -45,11 +46,14 @@ def Dijkstra(modelo, s):
     c = {}
     #Nodo fuente
     nodoFuente = modelo.nodos.get(s)
+    #Costo de recorrer cada arista
+    costo = modelo.costos.copy()
+    print("Caminos recorridos: ", costo)
     #Si el nodo fuente no existe, termina el proceso
     if nodoFuente == None:
         print("El nodo Fuente no pertenece al modelo")
         return False
-    nodoFuente = int(nodoFuente)
+    nodoFuente = int(nodoFuente)    
     contadorNodos = 0
     #Agregamos a la cola de prioridades los nodos con prioridad de infinito
     while modelo.nodos.get(contadorNodos) != None:
@@ -58,38 +62,36 @@ def Dijkstra(modelo, s):
         else:
             #Asignar en cola de Prioridades el nodo fuente con valor 0
             colaPrioridad.put((0, nodoFuente))
-            c[nodoFuente] = 0   
+            c[nodoFuente] = 0 
         contadorNodos += 1
     #Mientras la cola de Prioridades no este vacia
     while not colaPrioridad.empty():
         #Obtenemos el primer elemento de la cola    
         prioridad, nodo = colaPrioridad.get()
         nodo = int(nodo)
-        print(f"Prioridad: {prioridad}, Nodo: {nodo}")
         #Agregamos el nodo a la lista S
         S.append(nodo)
+        #Agregamos el nodo al archivo .gv
+        G.setAtributo(nodo, prioridad)
         #Para cada arista saliente de nodo
-        n1, camino = nodosDeArista(modelo, nodo)
-        print(f"Nodos vecinos: {n1}, Caminos: {camino}")        
+        n1, camino = nodosDeArista(modelo, nodo)      
         for i in range(len(n1)): 
             v = int(n1[i])  #Nodo v 
-            le = camino[i]  #Costo de recorrer desde nodo a v        
+            le = camino[i]  #Costo de recorrer desde nodo a v                    
             #Si i no se encuentra en la lista S
             if v not in S:
-                print(f"{v} no se encuentra en {S}")
+                #Agregamos una arista al archivo .gv
+                G.agregarArista(nodo, v, ' -> ', le)
                 #Si d(v) > d(u) + l
                 if c.get(v) > (c.get(nodo) + le):
                     #d(v) = d(u) + l
                     c[v] = c.get(nodo) + le
                     #Actualizar en cola de prioridad d(v)
-                    colaPrioridad.put((c.get(v), v))                    
-                    print(f"Nueva prioridad {c.get(v)} en nodo {v}")
-
-    print("Cola Vacia?", colaPrioridad.empty())
-    print("Lista de nodos recorridos", S)
-    return True
-
-modelo = modeloMalla(4, 4)
+                    colaPrioridad.put((c.get(v), v))                            
+    return G
+"""
+modelo = modeloMalla(3, 3)
 print(modelo)
-x = Dijkstra(modelo, 4)
+x = Dijkstra(modelo, 2)
 print(x)
+"""
