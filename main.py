@@ -2,11 +2,11 @@ from generadorModelos import *
 from Dijkstra import *
 
 #Numero de muestras que se graficaran por modelo
-numNodos = [9]
+numNodos = [16]
 #Matriz para el modelo malla
-matriz = {9:[3, 3], 500: [25, 20]}
+matriz = {16:[4, 4], 500: [25, 20]}
 #Nodo Fuente para crear el arbol
-nodoFuente = 0
+nodoFuente = 8
 
 """
 Modelo Malla

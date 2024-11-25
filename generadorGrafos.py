@@ -41,7 +41,7 @@ class Grafo:
             self.aristas[arista] = arista   #Agrega arista
             #Agrega el costo de recorrer una arista
             if le == None:
-                self.costos[arista] = random.random() #Si no hay un valor definido de arista
+                self.costos[arista] = random.randint(0, 100)  #Si no hay un valor definido de arista
             else:
                 self.costos[arista] = le    #Si ya existe un valor definido para esa arista
         return arista
@@ -69,7 +69,6 @@ class Grafo:
         cadena += 'digraph ' + id + '{\n'
         #Imprimir los nodos
         for nodo in self.nodos:
-            print(f"Nodo: {nodo}, Valor de label: {str(self.attr.get(nodo))}")
             cadena += str(nodo) + '[label="' + str(self.attr.get(nodo)) + '"];\n'
         #Imprimir las aristas
         for arista in self.aristas:
