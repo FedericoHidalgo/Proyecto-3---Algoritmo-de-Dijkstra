@@ -69,7 +69,10 @@ class Grafo:
         cadena += 'digraph ' + id + '{\n'
         #Imprimir los nodos
         for nodo in self.nodos:
-            cadena += str(nodo) + '[label="' + str(self.attr.get(nodo)) + '"];\n'
+            if self.attr.get(nodo) == str(0):
+                cadena += str(nodo) + '[label="N' + str(nodo) + ' (' + str(self.attr.get(nodo)) + '), ", color="red"];\n'
+            else:
+                cadena += str(nodo) + '[label="N' + str(nodo) + ' (' + str(self.attr.get(nodo)) + ')"];\n'
         #Imprimir las aristas
         for arista in self.aristas:
             cadena += str(arista) + '[label="' + str(self.costos.get(arista)) + '"];\n'

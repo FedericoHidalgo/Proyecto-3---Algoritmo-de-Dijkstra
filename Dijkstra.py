@@ -69,33 +69,24 @@ def Dijkstra(modelo, s, dirigido = False):
         prioridad, nodo = colaPrioridad.get()
         if nodo not in S:
             nodo = int(nodo)
-            print(f"\nNodo evaluado: {nodo}")
             #Agregamos el nodo a la lista S
             S.append(nodo)
-            print(f"Se actualiza S: {S}")
             #Agregamos el nodo al archivo .gv
             G.setAtributo(nodo, prioridad)
-            print(f"Se actualizan atributos del nodo: {nodo}, {prioridad}")
             #Para cada arista saliente de nodo
             n1, camino = nodosDeArista(modelo, nodo)       
             for i in range(len(n1)): 
                 v = int(n1[i])  #Nodo v 
-                le = camino[i]  #Costo de recorrer desde nodo a v  
-                print(f"N1: {nodo}, N2: {v}, C: {le}")                  
+                le = camino[i]  #Costo de recorrer desde nodo a v               
                 #Si v no se encuentra en la lista S
-                if v not in S:   
-                    print(f"{v} no esta en S")          
+                if v not in S:         
                     #Agregamos una arista al archivo .gv
                     G.agregarArista(nodo, v, ' -- ', le)  
                     #Si d(v) > d(u) + l
                     caminoPrevio = c.get(nodo) + le
-                    print(f"Valor de recorrer ese nodo: {caminoPrevio}")
                     if c.get(v) > caminoPrevio:
-                        print("d(v) > d(u) + l")   
-                        print(f"d(v) = d(u) + l: {round(c.get(nodo) + le, 4)}")
                         #d(v) = d(u) + l
                         c[v] = round(c.get(nodo) + le, 4)
-                        print(f"Nva prioridad c[v]: {c.get(v)}")
                         #Actualizar en cola de prioridad d(v)
                         colaPrioridad.put((c.get(v), v))                                         
     return G
